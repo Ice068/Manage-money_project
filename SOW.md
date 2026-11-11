@@ -45,18 +45,19 @@
 
 ## 4. แนวทาง Technology Stack สำหรับการเรียนรู้
 
-Stack ตั้งต้นที่แนะนำ (ปรับได้ตามประสบการณ์และสภาพแวดล้อม):
+Stack ที่เลือกสำหรับโครงการนี้:
 
 - **ภาษา:** Python — อ่านง่าย เหมาะกับการเรียนรู้ backend และการคำนวณ
-- **เว็บ backend:** Flask — framework ขนาดเล็ก ทำให้เห็น routing, request และ response ชัด
-- **หน้าเว็บ:** HTML, CSS, Bootstrap และ Jinja templates — เริ่มจาก server-rendered UI ลดจำนวนแนวคิดที่ต้องเรียนพร้อมกัน
+- **เว็บ backend:** FastAPI — ทำ REST API ด้วย Python, มี validation ผ่าน Pydantic และเอกสาร API อัตโนมัติ
+- **หน้าเว็บ:** HTML, CSS และ JavaScript แบบเริ่มต้น — เรียก REST API ของ FastAPI; เพิ่ม Bootstrap ได้หากต้องการจัดหน้าให้เร็วขึ้น
 - **ฐานข้อมูล:** SQLite — ไม่มี database server แยก เหมาะกับเว็บส่วนตัวและงานทดลอง
-- **เชื่อมฐานข้อมูล:** SQLAlchemy — เรียนรู้ model และ query โดยยังใช้ SQL พื้นฐานได้
+- **เชื่อมฐานข้อมูล:** SQLAlchemy + Alembic — ORM และ migration สำหรับปรับ schema ตามลำดับ
+- **ตรวจสอบข้อมูล API:** Pydantic — กำหนดรูปแบบและข้อจำกัดของ request/response
 - **กราฟ:** Chart.js (เฉพาะเมื่อจำเป็นต้องแสดงแนวโน้ม)
 - **AI:** เรียก API ผ่าน backend แบบ optional; ห้ามใส่ API key ใน browser และใช้การคำนวณฝั่งแอปเป็นค่าหลัก
 - **ควบคุมเวอร์ชัน:** Git — เก็บประวัติการเปลี่ยนแปลงและย้อนกลับได้
 
-การเลือกนี้ให้ความสำคัญกับเส้นทางเรียนที่ตรงไปตรงมาและ SQLite ตามการใช้งานคนเดียว ไม่ได้หมายความว่าเป็น stack เดียวที่ทำได้ หากผู้เรียนถนัด JavaScript อยู่แล้ว สามารถเปลี่ยนเป็น Node.js ได้โดยคงหลักการแยกชั้นและใช้ SQLite
+Stack ที่เลือกสำหรับโครงการนี้คือ **FastAPI + SQLite** โดยใช้ HTML/CSS/JavaScript เป็น frontend แยกเรียก API เหมาะกับการฝึกทำ backend API และรองรับการต่อยอด frontend ภายหลัง หากผู้เรียนถนัด JavaScript อยู่แล้วอาจเปลี่ยน backend ได้ แต่ต้องปรับเอกสารและแผนสอนให้ตรงกัน
 
 ## 5. ขั้นตอนและแผนการสอน
 
@@ -64,13 +65,13 @@ Stack ตั้งต้นที่แนะนำ (ปรับได้ตา
 
 | ระยะ | งาน | แนวคิด Stack ที่สอน | ผลลัพธ์ย่อย |
 |---|---|---|---|
-| 1. ตั้งโครงการ | ติดตั้ง Python, สร้าง virtual environment, ติดตั้ง Flask, สร้าง Git repo | Python environment, dependency, Git commit | หน้าแรก Flask ทำงานในเครื่อง |
-| 2. ทำ UI พื้นฐาน | สร้าง layout, navigation, form และตารางรายการ | HTML, CSS, Bootstrap, Jinja | หน้ารายการและฟอร์มใช้งานได้ |
-| 3. วางข้อมูล | ออกแบบตารางและเชื่อม SQLite | ตาราง, primary key, SQL, SQLAlchemy, migration | เพิ่ม/อ่านข้อมูลจากฐานข้อมูลได้ |
-| 4. ธุรกรรมและสูตร | ทำ CRUD, validation และ logic สรุปยอด | Flask routes, validation, Decimal/หน่วยสตางค์, query | บันทึกรายการและยอดรวมถูกต้อง |
-| 5. เป้าหมายและแดชบอร์ด | คำนวณวันเงินสำรองและวันถึงเป้าหมาย | แยก business logic จาก route, การจัดการ edge case | ผลคำนวณพร้อมคำอธิบายสมมติฐาน |
-| 6. AI แบบปลอดภัย | เพิ่มสรุปภาษาธรรมดาแบบเปิด/ปิดได้ | API client, environment secrets, prompt input minimization, error handling | AI อธิบายค่าที่ระบบคำนวณ ไม่คำนวณแทน |
-| 7. ส่งออกและเก็บงาน | CSV, backup/restore, README และตรวจ flow ด้วยตนเอง | file handling, backup, documentation | ส่งมอบโปรเจกต์ที่รันและดูแลต่อได้ |
+| 1. ตั้งโครงการ | ติดตั้ง Python, สร้าง virtual environment, ติดตั้ง FastAPI/Uvicorn, สร้าง Git repo | Python environment, dependency, Git commit | API เริ่มทำงานในเครื่องและเปิดหน้าเอกสาร API ได้ |
+| 2. API เบื้องต้นและ UI | สร้าง endpoint แรกและหน้า HTML/CSS/JavaScript ที่เรียก API | HTTP, JSON, REST, fetch, CORS ใน local development | หน้าเว็บอ่านข้อมูลจาก API ได้ |
+| 3. วางข้อมูล | ออกแบบตารางและเชื่อม SQLite | ตาราง, primary key, SQL, SQLAlchemy, Alembic migration | เพิ่ม/อ่านข้อมูลจากฐานข้อมูลได้ |
+| 4. ธุรกรรมและสูตร | ทำ CRUD, validation และ logic สรุปยอด | FastAPI routers, Pydantic, Decimal/หน่วยสตางค์, parameterized query | บันทึกรายการและยอดรวมถูกต้อง |
+| 5. เป้าหมายและแดชบอร์ด | คำนวณวันเงินสำรองและวันถึงเป้าหมาย | แยก business logic จาก endpoint, การจัดการ edge case | ผลคำนวณพร้อมคำอธิบายสมมติฐาน |
+| 6. AI และความปลอดภัย | เพิ่มสรุปภาษาธรรมดาแบบเปิด/ปิดได้ พร้อม hardening สำหรับ local app | API client, environment secrets, input validation, output escaping, CORS, error handling, data minimization | AI อธิบายค่าที่ระบบคำนวณ; secret ไม่อยู่ใน frontend |
+| 7. ส่งออกและเก็บงาน | CSV, backup/restore, README และตรวจ flow ด้วยตนเอง | file handling, backup, dependency update, documentation | ส่งมอบโปรเจกต์ที่รันและดูแลต่อได้ |
 
 **แนวทางสอน:** แต่ละระยะเริ่มจากเป้าหมายสั้น ๆ อธิบายแนวคิดที่จำเป็น ทำตัวอย่างร่วมกัน แล้วให้ผู้เรียนปรับต่อเอง ควรทำงานทีละชั้นและบันทึก Git เมื่อแต่ละชิ้นใช้งานได้
 
@@ -83,6 +84,9 @@ Stack ตั้งต้นที่แนะนำ (ปรับได้ตา
 - AI เป็นทางเลือกและไม่ทำให้สูตรหลักหรือการใช้งานออฟไลน์หยุดทำงาน
 - ส่งออก CSV และทำตามคู่มือสำรอง/กู้คืนได้
 - มี README อธิบายการติดตั้ง การตั้งค่า และการใช้งาน
+- API key ไม่อยู่ใน source code หรือ frontend; ข้อความจากผู้ใช้ถูก validate ก่อนบันทึกและ escape ก่อนแสดงผล
+- หากแอปรันแบบ local-only ให้ bind กับ localhost; การเปิดรับเครื่องอื่นต้องมี authentication และ HTTPS ก่อน
+- CORS จำกัดเฉพาะ frontend origin ที่กำหนด และไฟล์ SQLite/backup ไม่ถูกเปิดเป็น public static file
 
 ## 7. ความรับผิดชอบและข้อสมมติ
 
