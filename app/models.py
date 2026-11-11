@@ -18,3 +18,11 @@ class Transaction(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
+
+
+class AppSettings(Base):
+    __tablename__ = "app_settings"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    opening_balance_satangs: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    opening_balance_date: Mapped[date] = mapped_column(Date, nullable=False)

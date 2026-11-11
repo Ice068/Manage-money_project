@@ -3,12 +3,14 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+MAX_AMOUNT_SATANGS = 1_000_000_000_000
+
 
 class TransactionCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     type: Literal["income", "expense"]
-    amount_satangs: int = Field(gt=0)
+    amount_satangs: int = Field(gt=0, le=MAX_AMOUNT_SATANGS)
     date: date
     category: str = Field(min_length=1, max_length=80)
     note: str | None = Field(default=None, max_length=500)
@@ -23,3 +25,28 @@ class TransactionRead(TransactionCreate):
 
     id: int
     created_at: datetime
+
+
+class DashboardSettingsUpdate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    opening_balance_satangs: int = Field(ge=0, le=MAX_AMOUNT_SATANGS)
+    opening_balance_date: date
+
+
+class DashboardSettingsRead(DashboardSettingsUpdate):
+    model_config = ConfigDict(from_attributes=True, extra="forbid")
+
+
+class DashboardSummary(BaseModel):
+    period_start: date
+    period_end: date
+    period_days: int
+    income_satangs: int
+    expense_satangs: int
+    net_satangs: int
+    opening_balance_satangs: int
+    opening_balance_date: date
+    current_balance_satangs: int
+    average_daily_expense_satangs: float | None
+    runway_days: int | None

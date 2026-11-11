@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.engine import Engine
 
 from app.database import Base, engine
+from app.routers.dashboard import router as dashboard_router
 from app.routers.transactions import router as transactions_router
 
 
@@ -32,6 +33,7 @@ def create_app(database_engine: Engine = engine) -> FastAPI:
     application.include_router(
         transactions_router, prefix="/api/transactions", tags=["transactions"]
     )
+    application.include_router(dashboard_router, prefix="/api/dashboard", tags=["dashboard"])
 
     @application.get("/health", tags=["health"])
     def health_check() -> dict[str, str]:

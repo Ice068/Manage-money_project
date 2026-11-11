@@ -3,12 +3,84 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Income & Expense Tracker</title>
+    <meta name="theme-color" content="#f3f6f8" />
+    <title>แดชบอร์ดการเงินส่วนตัว</title>
   </head>
   <body>
-    <main>
-      <h1>เว็บบันทึกรายรับ–รายจ่าย</h1>
-      <p id="api-status">กำลังเชื่อมต่อ backend…</p>
+    <main class="page-shell">
+      <header class="page-header">
+        <div>
+          <p class="eyebrow">MONEY OVERVIEW</p>
+          <h1>ภาพรวมการเงิน</h1>
+          <p class="subtitle">สรุปรายรับ รายจ่าย และเงินสำรองจากรายการที่บันทึก</p>
+        </div>
+        <p id="api-status" class="status" role="status">กำลังเชื่อมต่อ…</p>
+      </header>
+
+      <section class="panel filter-panel" aria-labelledby="period-heading">
+        <div>
+          <h2 id="period-heading">ช่วงเวลาสรุป</h2>
+          <p class="muted">ใช้ช่วงนี้คำนวณรายรับ รายจ่าย และค่าใช้จ่ายเฉลี่ยต่อวัน</p>
+        </div>
+        <form id="period-form" class="period-form">
+          <label>ตั้งแต่ <input id="period-start" name="start_date" type="date" required /></label>
+          <label>ถึง <input id="period-end" name="end_date" type="date" required /></label>
+          <button type="submit">แสดงผล</button>
+        </form>
+      </section>
+
+      <section class="metrics" aria-label="สรุปยอดการเงิน">
+        <article class="metric-card balance-card">
+          <p class="metric-label">เงินคงเหลือโดยประมาณ</p>
+          <p id="current-balance" class="metric-value">—</p>
+          <p id="balance-note" class="metric-note">รวมเงินตั้งต้นและรายการตั้งแต่วันที่เริ่มติดตาม</p>
+        </article>
+        <article class="metric-card income-card">
+          <p class="metric-label">รายรับในช่วงนี้</p>
+          <p id="income-total" class="metric-value">—</p>
+          <p class="metric-note">รวมตามวันที่เลือก</p>
+        </article>
+        <article class="metric-card expense-card">
+          <p class="metric-label">รายจ่ายในช่วงนี้</p>
+          <p id="expense-total" class="metric-value">—</p>
+          <p id="average-expense" class="metric-note">เฉลี่ยต่อวัน —</p>
+        </article>
+        <article class="metric-card net-card">
+          <p class="metric-label">สุทธิในช่วงนี้</p>
+          <p id="net-total" class="metric-value">—</p>
+          <p class="metric-note">รายรับหักรายจ่าย</p>
+        </article>
+        <article class="metric-card runway-card">
+          <p class="metric-label">เงินสำรองอยู่ได้</p>
+          <p id="runway-days" class="metric-value">—</p>
+          <p class="metric-note">ประมาณการจากค่าใช้จ่ายเฉลี่ยในช่วงที่เลือก</p>
+        </article>
+      </section>
+
+      <p id="page-message" class="page-message" role="status" aria-live="polite"></p>
+
+      <section class="panel settings-panel" aria-labelledby="settings-heading">
+        <div>
+          <p class="eyebrow">เริ่มต้นการคำนวณ</p>
+          <h2 id="settings-heading">เงินตั้งต้น</h2>
+          <p class="muted">กรอกยอดเงินจริง ณ วันที่เริ่มติดตาม รายการหลังจากวันนั้นจะนำมาคำนวณเงินคงเหลือ</p>
+        </div>
+        <form id="settings-form" class="settings-form">
+          <label>
+            เงินตั้งต้น (บาท)
+            <input id="opening-balance" name="opening_balance" type="number" min="0" step="0.01" required />
+          </label>
+          <label>
+            วันที่เริ่มติดตาม
+            <input id="opening-date" name="opening_date" type="date" required />
+          </label>
+          <button type="submit">บันทึกเงินตั้งต้น</button>
+        </form>
+      </section>
+
+      <footer class="footnote">
+        ค่าประมาณอิงจากรายการที่บันทึกและช่วงวันที่เลือก ไม่ใช่การรับประกันค่าใช้จ่ายในอนาคต
+      </footer>
     </main>
     <script type="module" src="/src/main.js"></script>
   </body>

@@ -65,12 +65,16 @@ def test_create_rejects_invalid_values(client):
     bad_type = client.post("/api/transactions", json=payload(type="transfer"))
     zero_amount = client.post("/api/transactions", json=payload(amount_satangs=0))
     negative_amount = client.post("/api/transactions", json=payload(amount_satangs=-1))
+    excessive_amount = client.post(
+        "/api/transactions", json=payload(amount_satangs=1_000_000_000_001)
+    )
     missing_category = client.post("/api/transactions", json=payload(category=""))
     client_supplied_id = client.post("/api/transactions", json=payload(id=999))
 
     assert bad_type.status_code == 422
     assert zero_amount.status_code == 422
     assert negative_amount.status_code == 422
+    assert excessive_amount.status_code == 422
     assert missing_category.status_code == 422
     assert client_supplied_id.status_code == 422
 

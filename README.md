@@ -28,6 +28,9 @@ FastAPI's interactive API docs are at <http://127.0.0.1:8000/docs>. Transaction 
 - `GET /api/transactions/{id}` — read one transaction
 - `PUT /api/transactions/{id}` — replace a transaction
 - `DELETE /api/transactions/{id}` — delete a transaction
+- `GET /api/dashboard/summary` — summarize a date range and estimate reserve days
+- `GET /api/dashboard/settings` — read opening balance settings
+- `PUT /api/dashboard/settings` — save opening balance and its effective date
 
 Amounts use integer satang to keep calculations exact. Example request body:
 
@@ -42,6 +45,8 @@ Amounts use integer satang to keep calculations exact. Example request body:
 ```
 
 The SQLite database is created at `data/app.db` the first time the backend starts. This file is ignored by Git.
+
+The dashboard summarizes income and expenses over an inclusive date range. It calculates current balance as the opening balance plus income minus expenses from the opening-balance date through today. Reserve days use average expenses per calendar day in the selected range; days without transactions count as zero spending. If the range has no expenses, the dashboard says it cannot estimate reserve days.
 
 ## Run checks locally
 
