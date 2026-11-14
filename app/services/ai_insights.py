@@ -26,7 +26,9 @@ class AIProviderError(Exception):
 
 def get_ai_config() -> tuple[str | None, str]:
     load_dotenv()
-    return os.getenv("OPENAI_API_KEY"), os.getenv("OPENAI_MODEL", DEFAULT_MODEL)
+    api_key = os.getenv("OPENAI_API_KEY", "").strip() or None
+    model = os.getenv("OPENAI_MODEL", "").strip() or DEFAULT_MODEL
+    return api_key, model
 
 
 def generate_insight(metrics: dict) -> tuple[str, str]:
