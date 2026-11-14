@@ -1,4 +1,5 @@
 import csv
+import json
 import sqlite3
 import tempfile
 from datetime import date, datetime
@@ -13,7 +14,7 @@ from sqlalchemy.orm import Session
 from starlette.background import BackgroundTask
 
 from app.database import get_db
-from app.models import Transaction
+from app.models import AppSettings, SavingsGoal, Transaction
 
 router = APIRouter()
 
@@ -63,6 +64,59 @@ def export_transactions_csv(
     return StreamingResponse(
         iter([content]),
         media_type="text/csv; charset=utf-8",
+        headers={
+            "Content-Disposition": f'attachment; filename="{filename}"',
+            "Cache-Control": "no-store",
+        },
+    )
+
+
+@router.get("/backup.json")
+def download_portable_backup(db: Session = Depends(get_db)):
+    transactions = db.scalars(select(Transaction).order_by(Transaction.id)).all()
+    goals = db.scalars(select(SavingsGoal).order_by(SavingsGoal.id)).all()
+    settings = db.scalars(select(AppSettings).order_by(AppSettings.id)).all()
+    payload = {
+        "format": "income-expense-tracker-backup",
+        "version": 1,
+        "exported_at": datetime.now().astimezone().isoformat(),
+        "transactions": [
+            {
+                "id": item.id,
+                "type": item.type,
+                "amount_satangs": item.amount_satangs,
+                "date": item.date.isoformat(),
+                "category": item.category,
+                "note": item.note,
+                "created_at": item.created_at.isoformat(),
+            }
+            for item in transactions
+        ],
+        "savings_goals": [
+            {
+                "id": item.id,
+                "name": item.name,
+                "target_amount_satangs": item.target_amount_satangs,
+                "saved_amount_satangs": item.saved_amount_satangs,
+                "note": item.note,
+                "created_at": item.created_at.isoformat(),
+            }
+            for item in goals
+        ],
+        "settings": [
+            {
+                "id": item.id,
+                "opening_balance_satangs": item.opening_balance_satangs,
+                "opening_balance_date": item.opening_balance_date.isoformat(),
+            }
+            for item in settings
+        ],
+    }
+    content = json.dumps(payload, ensure_ascii=False, indent=2).encode("utf-8")
+    filename = f"money_backup_{date.today():%Y%m%d}.json"
+    return StreamingResponse(
+        iter([content]),
+        media_type="application/json; charset=utf-8",
         headers={
             "Content-Disposition": f'attachment; filename="{filename}"',
             "Cache-Control": "no-store",

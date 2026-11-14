@@ -1,6 +1,11 @@
 import "./style.css";
 
-const API_BASE = "http://127.0.0.1:8000/api";
+const API_BASE = "/api";
+const loginScreen = document.querySelector("#login-screen");
+const appShell = document.querySelector("#app-shell");
+const loginForm = document.querySelector("#login-form");
+const loginMessage = document.querySelector("#login-message");
+const logoutButton = document.querySelector("#logout-button");
 const statusElement = document.querySelector("#api-status");
 const messageElement = document.querySelector("#page-message");
 const periodForm = document.querySelector("#period-form");
@@ -37,6 +42,9 @@ async function request(path, options = {}) {
   });
   if (!response.ok) {
     const body = await response.json().catch(() => ({}));
+    if (response.status === 401 && path !== "/auth/status" && path !== "/auth/login") {
+      showLogin();
+    }
     const detail = typeof body.detail === "string"
       ? body.detail
       : Array.isArray(body.detail)
@@ -336,4 +344,62 @@ async function initialize() {
   await Promise.all([loadSettings(), loadDashboard(), loadAIStatus()]);
 }
 
-initialize();
+function showLogin(message = "") {
+  appShell.hidden = true;
+  loginScreen.hidden = false;
+  logoutButton.hidden = true;
+  loginMessage.textContent = message;
+  document.querySelector("#login-password").value = "";
+}
+
+async function showApp(authEnabled) {
+  loginScreen.hidden = true;
+  appShell.hidden = false;
+  logoutButton.hidden = !authEnabled;
+  await initialize();
+}
+
+loginForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const submit = document.querySelector("#login-submit");
+  submit.disabled = true;
+  loginMessage.textContent = "กำลังตรวจสอบ…";
+  try {
+    await request("/auth/login", {
+      method: "POST",
+      body: JSON.stringify({
+        username: document.querySelector("#login-username").value,
+        password: document.querySelector("#login-password").value,
+      }),
+    });
+    loginForm.reset();
+    await showApp(true);
+  } catch (error) {
+    loginMessage.textContent = error.message;
+  } finally {
+    submit.disabled = false;
+  }
+});
+
+logoutButton.addEventListener("click", async () => {
+  try {
+    await request("/auth/logout", { method: "POST", body: "{}" });
+  } finally {
+    showLogin("ออกจากระบบแล้ว");
+  }
+});
+
+async function boot() {
+  try {
+    const auth = await request("/auth/status");
+    if (auth.auth_enabled && !auth.authenticated) {
+      showLogin();
+      return;
+    }
+    await showApp(auth.auth_enabled);
+  } catch (error) {
+    showLogin(error.message);
+  }
+}
+
+boot();

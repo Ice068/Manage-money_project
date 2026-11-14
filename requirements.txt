@@ -3,3 +3,6 @@ uvicorn[standard]
 sqlalchemy
 openai
 python-dotenv
+psycopg[binary]
+pwdlib[argon2]
+itsdangerous

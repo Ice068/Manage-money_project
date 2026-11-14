@@ -7,14 +7,31 @@
     <title>แดชบอร์ดการเงินส่วนตัว</title>
   </head>
   <body>
-    <main class="page-shell">
+    <main id="login-screen" class="login-screen">
+      <section class="login-card" aria-labelledby="login-heading">
+        <p class="eyebrow">PRIVATE FINANCE TRACKER</p>
+        <h1 id="login-heading">เข้าสู่ระบบ</h1>
+        <p class="muted">ข้อมูลการเงินของคุณได้รับการป้องกัน</p>
+        <form id="login-form" class="login-form">
+          <label>ชื่อผู้ใช้ <input id="login-username" name="username" autocomplete="username" required /></label>
+          <label>รหัสผ่าน <input id="login-password" name="password" type="password" autocomplete="current-password" required /></label>
+          <button id="login-submit" type="submit">เข้าสู่ระบบ</button>
+          <p id="login-message" class="login-message" role="alert" aria-live="polite"></p>
+        </form>
+      </section>
+    </main>
+
+    <main class="page-shell" id="app-shell" hidden>
       <header class="page-header">
         <div>
           <p class="eyebrow">MONEY OVERVIEW</p>
           <h1>ภาพรวมการเงิน</h1>
           <p class="subtitle">สรุปรายรับ รายจ่าย และเงินสำรองจากรายการที่บันทึก</p>
         </div>
-        <p id="api-status" class="status" role="status">กำลังเชื่อมต่อ…</p>
+        <div class="header-actions">
+          <p id="api-status" class="status" role="status">กำลังเชื่อมต่อ…</p>
+          <button id="logout-button" class="secondary-button" type="button" hidden>ออกจากระบบ</button>
+        </div>
       </header>
 
       <section class="panel filter-panel" aria-labelledby="period-heading">
@@ -127,6 +144,19 @@
           </div>
         </form>
         <div id="savings-goals" class="goals-list" aria-live="polite"></div>
+      </section>
+
+      <section class="panel export-panel" aria-labelledby="export-heading">
+        <div>
+          <p class="eyebrow">YOUR DATA</p>
+          <h2 id="export-heading">ส่งออกและสำรองข้อมูล</h2>
+          <p class="muted">JSON สำรองรายการ เป้าหมาย และเงินตั้งต้น ส่วน CSV เปิดดูรายการได้</p>
+          <p class="input-hint">ไฟล์มีข้อมูลส่วนตัวและหมายเหตุ เก็บไว้ในที่ปลอดภัย</p>
+        </div>
+        <div class="export-actions">
+          <a href="/api/exports/backup.json">สำรองข้อมูลทั้งหมด (JSON)</a>
+          <a class="secondary-link" href="/api/exports/transactions.csv">ดาวน์โหลดรายการ (CSV)</a>
+        </div>
       </section>
 
       <footer class="footnote">

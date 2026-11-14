@@ -9,6 +9,8 @@
 
 * { box-sizing: border-box; }
 
+[hidden] { display: none !important; }
+
 body {
   margin: 0;
   min-width: 320px;
@@ -22,6 +24,27 @@ button, input { font: inherit; }
   margin: 0 auto;
   padding: 52px 0 32px;
 }
+
+.login-screen { display: grid; min-height: 100vh; place-items: center; padding: 24px; background: radial-gradient(circle at 50% 0%, #e2f1eb, #f3f6f8 55%); }
+.login-card { width: min(420px, 100%); padding: 32px; border: 1px solid #e0e8e7; border-radius: 18px; background: #fff; box-shadow: 0 18px 54px #193f3214; }
+.login-card h1 { margin: 0 0 8px; font-size: 1.8rem; }
+.login-card > .muted { margin: 0 0 24px; }
+.login-form { display: grid; gap: 16px; }
+.login-form label { display: grid; gap: 7px; color: #455663; font-size: 0.88rem; font-weight: 650; }
+.login-form input { width: 100%; min-height: 44px; padding: 9px 12px; border: 1px solid #cbd6db; border-radius: 8px; background: #fff; }
+.login-form input:focus { border-color: #17785e; outline: 3px solid #17785e24; }
+.login-form button { min-height: 44px; }
+.login-message { min-height: 1.4em; margin: 0; color: #a5372d; font-size: 0.86rem; }
+.header-actions { display: flex; align-items: center; gap: 14px; }
+.header-actions .status { margin: 0; }
+.export-panel { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-top: 24px; padding: 22px 24px; }
+.export-panel h2 { margin-bottom: 6px; }
+.export-panel .input-hint { display: block; margin-top: 8px; }
+.export-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.export-actions a { display: inline-flex; min-height: 42px; align-items: center; justify-content: center; padding: 0 16px; border-radius: 8px; background: #17785e; color: #fff; font-size: 0.88rem; font-weight: 700; text-decoration: none; white-space: nowrap; }
+.export-actions a:hover { background: #12634d; }
+.export-actions .secondary-link { border: 1px solid #d8e0e5; background: #fff; color: #405361; }
+.export-actions .secondary-link:hover { background: #f1f5f6; }
 
 .page-header {
   display: flex;
@@ -176,7 +199,7 @@ button:disabled { cursor: not-allowed; opacity: 0.55; }
 
 @media (max-width: 850px) {
   .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .filter-panel, .settings-panel { align-items: flex-start; flex-direction: column; }
+  .filter-panel, .settings-panel, .export-panel { align-items: flex-start; flex-direction: column; }
   .period-form, .settings-form { width: 100%; }
   .period-form label, .settings-form label { flex: 1; }
   .settings-form input { width: 100%; }
@@ -201,4 +224,6 @@ button:disabled { cursor: not-allowed; opacity: 0.55; }
   .goals-list { grid-template-columns: 1fr; }
   .ai-heading { align-items: flex-start; flex-direction: column; }
   .ai-panel { padding: 18px 16px; }
+  .export-panel { align-items: stretch; padding: 18px 16px; }
+  .export-actions { align-items: stretch; flex-direction: column; }
 }

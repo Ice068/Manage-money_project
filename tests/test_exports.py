@@ -1,5 +1,6 @@
 import csv
 import io
+import json
 import sqlite3
 from datetime import date, timedelta
 
@@ -90,3 +91,36 @@ def test_sqlite_backup_download_is_a_valid_full_database(client, tmp_path):
 
     assert result == (50000, "สำรองนี้")
     assert integrity == "ok"
+
+
+def test_portable_backup_includes_all_personal_finance_data(client):
+    today = date.today().isoformat()
+    client.post(
+        "/api/transactions",
+        json=transaction_payload("income", 50000, today, "งาน", "รายรับทดสอบ"),
+    )
+    client.post(
+        "/api/savings-goals",
+        json={
+            "name": "จักรยาน",
+            "target_amount_satangs": 100000,
+            "saved_amount_satangs": 20000,
+            "note": "เป้าหมายสำรอง",
+        },
+    )
+    client.put(
+        "/api/dashboard/settings",
+        json={"opening_balance_satangs": 200000, "opening_balance_date": today},
+    )
+
+    response = client.get("/api/exports/backup.json")
+
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("application/json")
+    assert response.headers["cache-control"] == "no-store"
+    assert response.headers["content-disposition"].endswith(".json\"")
+    backup = json.loads(response.content)
+    assert backup["format"] == "income-expense-tracker-backup"
+    assert backup["transactions"][0]["note"] == "รายรับทดสอบ"
+    assert backup["savings_goals"][0]["name"] == "จักรยาน"
+    assert backup["settings"][0]["opening_balance_satangs"] == 200000

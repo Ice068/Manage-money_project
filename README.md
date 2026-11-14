@@ -52,7 +52,7 @@ Amounts use integer satang to keep calculations exact. Example request body:
 }
 ```
 
-The SQLite database is created at `data/app.db` the first time the backend starts. This file is ignored by Git.
+The SQLite database is created at `data/app.db` the first time the backend starts unless `DATABASE_URL` points to PostgreSQL. This file is ignored by Git. `/api/exports/backup.json` downloads a portable backup of transactions, savings goals, and opening-balance settings; `/api/exports/transactions.csv` downloads the transactions as a spreadsheet-friendly CSV.
 
 The dashboard summarizes income and expenses over an inclusive date range. It calculates current balance as the opening balance plus income minus expenses from the opening-balance date through today. Reserve days use average expenses per calendar day in the selected range; days without transactions count as zero spending. If the range has no expenses, the dashboard says it cannot estimate reserve days.
 
@@ -96,3 +96,19 @@ npm run dev
 Open <http://127.0.0.1:5173>. The page calls the example endpoint at `http://127.0.0.1:8000/api/hello` to show that the two servers can communicate.
 
 The development servers bind to localhost. CORS allows only the two local frontend origins on port 5173. Do not expose either server to a network until authentication and HTTPS are configured.
+
+## Free Render deployment
+
+The Render Blueprint in `render.yaml` deploys one Docker web service on the Free plan. It serves the built frontend and FastAPI from the same origin, and enables a single-user login in production. The app requires `APP_USERNAME`, an Argon2id `APP_PASSWORD_HASH`, `APP_SECRET_KEY`, and `DATABASE_URL` before production startup; API docs are disabled in production. Sessions use an HTTP-only, Secure, SameSite=Strict cookie, expire after 12 hours, and API writes require a same-origin request.
+
+Render Free has an ephemeral filesystem. Local SQLite files would disappear after restart, sleep, or redeploy, so do not point the deployed app at SQLite. Render's own Free Postgres expires after 30 days. For a $0 setup, use a Neon Free PostgreSQL project and its pooled connection string as `DATABASE_URL`; the app creates its tables at startup. As of November 2026, Neon Free lists 1 GB storage per project and 100 compute-hours per month. These free limits and service availability can change; Neon Free has no long-term backup guarantee, so periodically download a JSON backup. Render Free services also sleep after 15 minutes without traffic and can take about a minute to wake. See [Render Free service limits](https://render.com/docs/free), [Neon plan limits](https://neon.com/blog/neon-free-plan-1-gb-per-project), and [Neon regions](https://neon.com/docs/introduction/regions).
+
+Deployment steps:
+
+1. Create a Neon Free project in AWS Singapore (`aws-ap-southeast-1`). Copy its pooled PostgreSQL connection string; do not put it in Git or send it in chat. Keep the database and Render service in Singapore to reduce connection latency.
+2. Generate an app password hash locally with `python tools/hash_password.py`. The script asks for a password without echoing it and prints an Argon2id hash. Use a unique password of at least 12 characters.
+3. In Render, create a Blueprint from this repository and select the `main` branch. Keep the web service plan set to `free`.
+4. In the Render service's environment settings, set `APP_USERNAME`, `APP_PASSWORD_HASH`, and `DATABASE_URL`. Render generates `APP_SECRET_KEY` from the Blueprint. The Blueprint leaves `OPENAI_API_KEY` unset to avoid paid AI API usage.
+5. Wait for the deploy to become healthy, then open the Render URL and log in. Do not import local transaction data unless you separately choose to transfer it to Neon.
+
+This is a free hobby deployment, not a production-grade financial datastore: the app may sleep, Neon has usage limits, and you must keep your own JSON backups. The deployed database starts empty; local SQLite data remains on your machine. The AI feature stays unavailable unless you add an API key, which can incur usage charges.
