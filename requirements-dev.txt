@@ -1,5 +1,5 @@
 -r requirements.txt
-httpx2
+httpx
 pytest
 ruff
 pip-audit==2.10.1
