@@ -50,3 +50,32 @@ class DashboardSummary(BaseModel):
     current_balance_satangs: int
     average_daily_expense_satangs: float | None
     runway_days: int | None
+
+
+class SavingsGoalFields(BaseModel):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    name: str = Field(min_length=1, max_length=100)
+    target_amount_satangs: int = Field(gt=0, le=MAX_AMOUNT_SATANGS)
+    saved_amount_satangs: int = Field(ge=0, le=MAX_AMOUNT_SATANGS)
+    note: str | None = Field(default=None, max_length=500)
+
+
+class SavingsGoalCreate(SavingsGoalFields):
+    pass
+
+
+class SavingsGoalUpdate(SavingsGoalFields):
+    pass
+
+
+class SavingsGoalRead(SavingsGoalFields):
+    model_config = ConfigDict(from_attributes=True, extra="forbid", str_strip_whitespace=True)
+
+    id: int
+    created_at: datetime
+    amount_remaining_satangs: int
+    progress_percent: float
+    average_daily_net_savings_satangs: float | None
+    estimated_days: int | None
+    estimated_date: date | None

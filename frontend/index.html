@@ -78,6 +78,41 @@
         </form>
       </section>
 
+      <section class="goals-section" aria-labelledby="goals-heading">
+        <div class="goals-heading">
+          <div>
+            <p class="eyebrow">PLAN YOUR NEXT PURCHASE</p>
+            <h2 id="goals-heading">เป้าหมายการออม</h2>
+            <p class="muted">ดูยอดที่ยังขาดและวันที่ประมาณการจากเงินออมสุทธิเฉลี่ย</p>
+          </div>
+        </div>
+        <form id="goal-form" class="panel goal-form">
+          <input id="goal-id" type="hidden" />
+          <label>
+            ชื่อของที่อยากได้
+            <input id="goal-name" type="text" maxlength="100" required placeholder="เช่น จักรยาน" />
+          </label>
+          <label>
+            ราคาเป้าหมาย (บาท)
+            <input id="goal-target" type="number" min="0.01" step="0.01" required />
+          </label>
+          <label>
+            เก็บไว้แล้ว (บาท)
+            <input id="goal-saved" type="number" min="0" step="0.01" value="0" required />
+            <span class="input-hint">ยอดนี้ใช้ติดตามเป้าหมาย ไม่หักจากเงินคงเหลืออัตโนมัติ</span>
+          </label>
+          <label class="goal-note-field">
+            บันทึกเพิ่มเติม (ไม่บังคับ)
+            <input id="goal-note" type="text" maxlength="500" placeholder="รายละเอียดของเป้าหมาย" />
+          </label>
+          <div class="goal-form-actions">
+            <button id="goal-submit" type="submit">เพิ่มเป้าหมาย</button>
+            <button id="goal-cancel" class="secondary-button" type="button" hidden>ยกเลิก</button>
+          </div>
+        </form>
+        <div id="savings-goals" class="goals-list" aria-live="polite"></div>
+      </section>
+
       <footer class="footnote">
         ค่าประมาณอิงจากรายการที่บันทึกและช่วงวันที่เลือก ไม่ใช่การรับประกันค่าใช้จ่ายในอนาคต
       </footer>

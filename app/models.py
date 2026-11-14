@@ -26,3 +26,16 @@ class AppSettings(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     opening_balance_satangs: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     opening_balance_date: Mapped[date] = mapped_column(Date, nullable=False)
+
+
+class SavingsGoal(Base):
+    __tablename__ = "savings_goals"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    target_amount_satangs: Mapped[int] = mapped_column(Integer, nullable=False)
+    saved_amount_satangs: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    note: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )

@@ -7,6 +7,7 @@ from sqlalchemy.engine import Engine
 
 from app.database import Base, engine
 from app.routers.dashboard import router as dashboard_router
+from app.routers.savings_goals import router as savings_goals_router
 from app.routers.transactions import router as transactions_router
 
 
@@ -34,6 +35,9 @@ def create_app(database_engine: Engine = engine) -> FastAPI:
         transactions_router, prefix="/api/transactions", tags=["transactions"]
     )
     application.include_router(dashboard_router, prefix="/api/dashboard", tags=["dashboard"])
+    application.include_router(
+        savings_goals_router, prefix="/api/savings-goals", tags=["savings-goals"]
+    )
 
     @application.get("/health", tags=["health"])
     def health_check() -> dict[str, str]:
