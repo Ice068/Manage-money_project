@@ -116,6 +116,16 @@ button:focus-visible { outline: 3px solid #17785e55; outline-offset: 2px; }
 .expense-card .metric-value { color: #c45e4d; }
 .net-card .metric-value { color: #8b6c29; }
 .runway-card .metric-value { color: #415f88; }
+.ai-panel { margin-bottom: 18px; padding: 20px 22px; }
+.ai-heading { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+.ai-heading h2 { margin-bottom: 6px; }
+.ai-privacy { margin: 14px 0 0; color: #718096; font-size: 0.76rem; line-height: 1.55; }
+.ai-response { margin: 12px 0 0; color: #3b5262; font-size: 0.88rem; line-height: 1.6; white-space: pre-wrap; }
+.goal-ai-response:empty { display: none; }
+.goal-actions { flex-wrap: wrap; }
+.ai-button { background: #3e5c88; }
+.ai-button:hover { background: #2e486f; }
+button:disabled { cursor: not-allowed; opacity: 0.55; }
 
 .page-message { min-height: 1.4em; margin: 8px 4px 14px; color: #17784a; font-size: 0.88rem; }
 .page-message.error { color: #b23e33; }
@@ -189,4 +199,6 @@ button:focus-visible { outline: 3px solid #17785e55; outline-offset: 2px; }
   .goal-note-field, .goal-form-actions { grid-column: auto; }
   .goal-form-actions { justify-content: flex-start; }
   .goals-list { grid-template-columns: 1fr; }
+  .ai-heading { align-items: flex-start; flex-direction: column; }
+  .ai-panel { padding: 18px 16px; }
 }

@@ -7,6 +7,8 @@ const periodForm = document.querySelector("#period-form");
 const settingsForm = document.querySelector("#settings-form");
 const goalForm = document.querySelector("#goal-form");
 const goalsList = document.querySelector("#savings-goals");
+const aiSummaryButton = document.querySelector("#ai-summary-button");
+let aiEnabled = false;
 const dateInput = (date) => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -151,6 +153,16 @@ function makeGoalCard(goal) {
 
   const actions = document.createElement("div");
   actions.className = "goal-actions";
+  const aiButton = document.createElement("button");
+  aiButton.type = "button";
+  aiButton.className = "ai-button";
+  aiButton.textContent = "AI อธิบายเป้าหมาย";
+  aiButton.disabled = !aiEnabled;
+  const insight = document.createElement("p");
+  insight.className = "ai-response goal-ai-response";
+  insight.setAttribute("role", "status");
+  insight.setAttribute("aria-live", "polite");
+  aiButton.addEventListener("click", () => requestInsight(goal.id, insight, aiButton));
   const editButton = document.createElement("button");
   editButton.type = "button";
   editButton.className = "secondary-button";
@@ -161,9 +173,9 @@ function makeGoalCard(goal) {
   deleteButton.className = "danger-button";
   deleteButton.textContent = "ลบ";
   deleteButton.addEventListener("click", () => deleteGoal(goal));
-  actions.append(editButton, deleteButton);
+  actions.append(aiButton, editButton, deleteButton);
 
-  card.append(header, note, amounts, progress, remaining, forecast, actions);
+  card.append(header, note, amounts, progress, remaining, forecast, insight, actions);
   return card;
 }
 
@@ -211,6 +223,46 @@ async function deleteGoal(goal) {
     await loadSavingsGoals();
   } catch (error) {
     showMessage(error.message, true);
+  }
+}
+
+async function requestInsight(goalId, output, button) {
+  button.disabled = true;
+  output.textContent = "กำลังขอคำอธิบายจาก AI…";
+  const requestBody = {
+    start_date: document.querySelector("#period-start").value,
+    end_date: document.querySelector("#period-end").value,
+  };
+  if (goalId !== null && goalId !== undefined) requestBody.goal_id = goalId;
+
+  try {
+    const result = await request("/ai/insights", {
+      method: "POST",
+      body: JSON.stringify(requestBody),
+    });
+    output.textContent = result.insight;
+  } catch (error) {
+    output.textContent = error.message;
+  } finally {
+    button.disabled = !aiEnabled;
+  }
+}
+
+async function loadAIStatus() {
+  try {
+    const status = await request("/ai/status");
+    aiEnabled = status.enabled;
+    aiSummaryButton.disabled = !aiEnabled;
+    aiSummaryButton.title = aiEnabled
+      ? "ส่งเฉพาะข้อมูลสรุปไปให้ AI อธิบาย"
+      : "ตั้งค่า OPENAI_API_KEY ฝั่ง backend ก่อน";
+    document.querySelector("#ai-config-status").textContent = aiEnabled
+      ? `พร้อมใช้งาน (${status.model}) — AI จะอธิบายค่าที่ระบบคำนวณไว้`
+      : "ยังไม่ได้ตั้งค่า AI — ดูขั้นตอนใน README แล้วตั้ง OPENAI_API_KEY ฝั่ง backend";
+    await loadSavingsGoals();
+  } catch (error) {
+    aiEnabled = false;
+    document.querySelector("#ai-config-status").textContent = error.message;
   }
 }
 
@@ -276,9 +328,12 @@ goalForm.addEventListener("submit", async (event) => {
 });
 
 document.querySelector("#goal-cancel").addEventListener("click", resetGoalForm);
+aiSummaryButton.addEventListener("click", () => {
+  requestInsight(null, document.querySelector("#ai-summary-response"), aiSummaryButton);
+});
 
 async function initialize() {
-  await Promise.all([loadSettings(), loadDashboard(), loadSavingsGoals()]);
+  await Promise.all([loadSettings(), loadDashboard(), loadAIStatus()]);
 }
 
 initialize();

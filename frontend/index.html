@@ -57,6 +57,22 @@
         </article>
       </section>
 
+      <section class="panel ai-panel" aria-labelledby="ai-heading">
+        <div class="ai-heading">
+          <div>
+            <p class="eyebrow">OPTIONAL AI EXPLANATION</p>
+            <h2 id="ai-heading">ให้ AI ช่วยอธิบายตัวเลข</h2>
+            <p id="ai-config-status" class="muted">กำลังตรวจการตั้งค่า AI…</p>
+          </div>
+          <button id="ai-summary-button" type="button" disabled>อธิบายภาพรวมนี้</button>
+        </div>
+        <p class="ai-privacy">
+          เมื่อกดปุ่ม ระบบจะส่งเฉพาะยอดรวมและค่าคำนวณไป OpenAI API ไม่ส่งรายการดิบ หมวดหมู่ ชื่อเป้าหมาย หรือหมายเหตุ
+          API data ไม่ถูกใช้ฝึกโมเดลโดยปริยาย แต่ abuse-monitoring logs อาจเก็บ prompt/response ได้นานถึง 30 วัน
+        </p>
+        <div id="ai-summary-response" class="ai-response" role="status" aria-live="polite"></div>
+      </section>
+
       <p id="page-message" class="page-message" role="status" aria-live="polite"></p>
 
       <section class="panel settings-panel" aria-labelledby="settings-heading">

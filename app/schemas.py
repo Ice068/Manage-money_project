@@ -79,3 +79,21 @@ class SavingsGoalRead(SavingsGoalFields):
     average_daily_net_savings_satangs: float | None
     estimated_days: int | None
     estimated_date: date | None
+
+
+class AIInsightRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    start_date: date | None = None
+    end_date: date | None = None
+    goal_id: int | None = Field(default=None, gt=0)
+
+
+class AIInsightResponse(BaseModel):
+    insight: str
+    model: str
+
+
+class AIStatus(BaseModel):
+    enabled: bool
+    model: str
